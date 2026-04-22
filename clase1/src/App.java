@@ -2,44 +2,41 @@ import java.util.Scanner;
 
 public class App {
     static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) throws Exception {
-        Cuenta cuenta = new Cuenta(1000);
+        BancoApp bancoApp = new BancoApp();
+        
+        Cuenta cuenta = new Cuenta(1000, "1010","1234");
+        Cuenta cuenta2 = new Cuenta(500, "2020","5678");
+        ServicioAutenticacion authService = new ServicioAutenticacion();
 
+        //caso 1: retiro exitoso
         try {
-            cuenta.retirar(1500);
-            System.out.println("Saldo restante: " + cuenta.getSaldo());
-        } catch (SaldoInsuficienteException e) {
+            authService.autenticar(cuenta, "123");
+            bancoApp.realizarRetiro(cuenta, 200.0);
+        } catch (SaldoInsuficienteException | MontoInvalidoException | AuthenticationException e) {
             System.out.println("Error: " + e.getMessage());
-            // TODO: handle exception
         }
-        //FileReader fr  =  new FileReader("src/archivo.txt");
-        //int[] numeros = {1,2,3,4,5};
-        //System.out.println(numeros[5]);//ArrayIndexOutOfBoundsException : index 5 out of bounds for length 5
 
-
-        //int a = 10 /  0; //ArithmeticException : /by zero
-
-        //String nombre = null;
-        //System.out.println(nombre.length()); //NullPointerException : Cannot invoke "String.length()" because
-
-        //String numero = "abc";
-        //int resultado = Integer.parseInt(numero); //NumberFormatException : For input string: "abc"
-        /*
-        System.out.print("Ingrese un número: ");
-        String textoLeido = sc.nextLine();
+        // Caso 2: retiro con monto negativo
         try {
-            int numero =  Integer.parseInt(textoLeido);
-            System.out.println("El número es: " + numero);
-            int resultado = 100 / numero;
-            System.out.println("El resultado de la división es: " + resultado);
-        } catch (NumberFormatException e) {
-            System.out.println("Error al convertir el texto a número: " + e.getMessage());
-            // TODO: handle exception
+            bancoApp.realizarRetiro(cuenta, -50);
+        } catch (SaldoInsuficienteException | MontoInvalidoException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-        catch (ArithmeticException e) {
-            System.out.println("Error en la división: " + e.getMessage());
-            // TODO: handle exception
+        
+        // Caso 3: transferencia exitosa
+        try {
+            bancoApp.realizarTransferencia(cuenta, cuenta2, 100);
+        } catch (SaldoInsuficienteException | MontoInvalidoException e) {
+            System.out.println("Error: " + e.getMessage());
         }
- */
+            // Caso 4: transferencia con monto negativo
+        try {
+            bancoApp.realizarTransferencia(cuenta, cuenta2, -50);
+        } catch (SaldoInsuficienteException | MontoInvalidoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
     }
 }

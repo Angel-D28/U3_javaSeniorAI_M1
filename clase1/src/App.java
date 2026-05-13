@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class App {
@@ -9,6 +10,13 @@ public class App {
         Cuenta cuenta = new Cuenta(1000, "1010","1234");
         Cuenta cuenta2 = new Cuenta(500, "2020","5678");
         ServicioAutenticacion authService = new ServicioAutenticacion();
+
+        try {
+            System.out.print("Ingrese su contraseña: ");
+            int password = sc.nextInt();   
+        } catch (InputMismatchException e) {
+            System.out.println("ingrese solo numeros " + e.getMessage());
+        }
 
         //caso 1: retiro exitoso
         try {
@@ -37,6 +45,8 @@ public class App {
         } catch (SaldoInsuficienteException | MontoInvalidoException e) {
             System.out.println("Error: " + e.getMessage());
         }
+
+         
 
     }
 }
